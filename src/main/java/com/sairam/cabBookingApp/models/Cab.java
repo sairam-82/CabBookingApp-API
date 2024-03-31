@@ -1,19 +1,20 @@
 package com.sairam.cabBookingApp.models;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//@Entity
-@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Simple {
-    private String name;
-    private String Id;
-    private String password;
+@Embeddable
+public class Cab {
+
+    public String cabType;
+
+    public String numberPlate;
+
+    public Double perKmRate;
 
 }

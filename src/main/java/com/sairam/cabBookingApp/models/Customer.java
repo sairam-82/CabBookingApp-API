@@ -2,10 +2,7 @@ package com.sairam.cabBookingApp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sairam.cabBookingApp.models.enums.Role;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -20,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collection;
 import java.util.List;
-
 @Entity
 @Data
 //@AllArgsConstructor
@@ -28,19 +24,17 @@ import java.util.List;
 //@RequiredArgsConstructor
 public class Customer extends User  implements UserDetails {
 
-    public Customer(@NotNull String firstName, @NotNull String lastName, @Email @NotNull String email, @NotNull String password, @NotNull Role role, String token, String address, Long mobileNumber, String id) {
-        super(id,firstName, lastName, email, password, role,  address, mobileNumber);
-        this.token = token;
+    public Customer(@NotNull String firstName, @NotNull String lastName, @Email @NotNull String email, @NotNull String password, @NotNull String role,  String address, Long mobileNumber) {
+        super(firstName, lastName, email, password, role,  address, mobileNumber,null);
+
     }
 
-//    @JsonIgnore
-    private String token;
-
-
+    @OneToMany(mappedBy = "customer",fetch = FetchType.EAGER)
+    private List<TripBook> trips;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("CUSTOMER"));
+        return List.of(new SimpleGrantedAuthority(getRole()));
     }
 
     @Override
@@ -50,7 +44,7 @@ public class Customer extends User  implements UserDetails {
 
     @Override
     public String getUsername() {
-        return super.getFirstName();
+        return getEmail();
     }
 
     @Override
@@ -72,7 +66,8 @@ public class Customer extends User  implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-//    private List<TripBook> trips;
+
+
 
 
 

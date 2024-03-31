@@ -1,4 +1,7 @@
 package com.sairam.cabBookingApp.repositories;
 
-public interface TripBookRepository {
+import com.sairam.cabBookingApp.models.TripBook;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TripBookRepository extends JpaRepository<TripBook,String> {
 }

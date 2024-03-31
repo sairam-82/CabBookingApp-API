@@ -1,4 +1,7 @@
 package com.sairam.cabBookingApp.models;
 
-public class Admin {
-}
+import jakarta.persistence.Entity;
+import org.springframework.boot.convert.DataSizeUnit;
+
+
+
