@@ -27,7 +27,7 @@ public class Driver extends User{
 
 
     private String license;
-    @OneToMany(mappedBy = "driver")
+    @OneToMany(mappedBy = "driver",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private List<TripBook> driverTrips;
 
     @Embedded

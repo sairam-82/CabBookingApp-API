@@ -1,7 +1,8 @@
 package com.sairam.cabBookingApp.services;
 
+import com.sairam.cabBookingApp.controllers.exchanges.responses.AuthenticationResponse;
 import com.sairam.cabBookingApp.models.Customer;
 
 public interface CustomerService {
-    public String register(Customer customer);
+    public AuthenticationResponse register(Customer customer);
 }

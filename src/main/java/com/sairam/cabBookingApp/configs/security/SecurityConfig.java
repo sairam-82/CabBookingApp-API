@@ -1,5 +1,6 @@
 package com.sairam.cabBookingApp.configs.security;
 
+import com.sairam.cabBookingApp.services.LogOutService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,18 +33,27 @@ public class SecurityConfig {
 
     @Autowired
     private UserDetailsService userDetailsService;
+    private final LogOutService logoutHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable).
-        authorizeHttpRequests(authorize-> authorize.requestMatchers("/auth/check").hasAuthority("driver"));
+        authorizeHttpRequests(authorize-> authorize.requestMatchers("/check").hasAuthority("customer"));
         http.authorizeHttpRequests(authorize-> authorize.requestMatchers("/auth/customer/register").permitAll());
-        http.authorizeHttpRequests(authorize-> authorize.requestMatchers("/auth/driver/register").permitAll());
+        http.authorizeHttpRequests(authorize-> authorize.requestMatchers("/auth/driver/register").permitAll().
+                requestMatchers("/driver/**").hasAuthority("driver").
+                requestMatchers("/trip/**").authenticated()
+                .requestMatchers("/drivers/**").authenticated());
+
         http.authorizeHttpRequests(authorize-> authorize.requestMatchers("/auth/simple").permitAll());
         http.authenticationProvider(authenticationProvider(userDetailsService));
         http.httpBasic(Customizer.withDefaults());
          http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.logout(logout ->
+                logout.logoutUrl("/api/v1/auth/logout")
+                        .addLogoutHandler(logoutHandler)
+                        .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()));
         return http.build();
     }
 

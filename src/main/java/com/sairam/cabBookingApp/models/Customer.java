@@ -22,53 +22,14 @@ import java.util.List;
 //@AllArgsConstructor
 @NoArgsConstructor
 //@RequiredArgsConstructor
-public class Customer extends User  implements UserDetails {
+public class Customer extends User   {
 
     public Customer(@NotNull String firstName, @NotNull String lastName, @Email @NotNull String email, @NotNull String password, @NotNull String role,  String address, Long mobileNumber) {
         super(firstName, lastName, email, password, role,  address, mobileNumber,null);
 
     }
 
-    @OneToMany(mappedBy = "customer",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private List<TripBook> trips;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(getRole()));
-    }
-
-    @Override
-    public String getPassword() {
-        return super.getPassword();
-    }
-
-    @Override
-    public String getUsername() {
-        return getEmail();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-
-
-
 
 }

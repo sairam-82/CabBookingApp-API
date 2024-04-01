@@ -1,13 +1,12 @@
 package com.sairam.cabBookingApp.configs.security;
 
-import com.sairam.cabBookingApp.services.JWTService;
+import com.sairam.cabBookingApp.repositories.UserRepository;
 import com.sairam.cabBookingApp.services.implementations.JWTServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,12 +20,14 @@ import java.io.IOException;
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
-    public JWTAuthenticationFilter(JWTServiceImpl jwtService, UserDetailsService userDetailsService) {
+    public JWTAuthenticationFilter(JWTServiceImpl jwtService, UserRepository userRepository, UserDetailsService userDetailsService) {
         this.jwtService = jwtService;
+        this.userRepository = userRepository;
         this.userDetailsService = userDetailsService;
     }
 
     private final JWTServiceImpl jwtService;
+    private final UserRepository userRepository;
     private final UserDetailsService userDetailsService;
 
 
@@ -36,7 +37,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        if (request.getServletPath().contains("/auth")) {
+        if (request.getServletPath().contains("/register")) {
             System.out.println("inside route check");
             filterChain.doFilter(request, response);
             return;
@@ -53,7 +54,10 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         userEmail = jwtService.extractUsername(jwt);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
+            var user = userRepository.findByToken(jwt);
+            var isTokenValid=!user.get().getToken().revoked && !user.get().getToken().expired;
+
+            if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,

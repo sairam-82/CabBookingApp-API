@@ -14,24 +14,14 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
  @Autowired
-    private CustomerRepository customerRepository;
+    private UserRepository userRepository;
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        System.out.println("inside uds");
-//        System.out.println(username);
-//        System.out.println(" sairam " +customerRepository.findCustomerByEmail(username).getPassword());
-        UserDetails user=customerRepository.findCustomerByEmail(username);
-//        System.out.println(user.getAuthorities());
+//
+        UserDetails user=userRepository.findUserByEmail(username).get();
         return user;
-//        System.out.println("done ");
-//        System.out.println(user.getAuthorities());
-//        try{
-//        return user;}
-//        catch (Exception e){
-//            System.out.println("in exc");
-//            throw new UsernameNotFoundException(e.getMessage());
-//        }
+//
     }
 }

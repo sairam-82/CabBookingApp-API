@@ -2,19 +2,21 @@ package com.sairam.cabBookingApp.models;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
-public class Cab {
+public class Token {
 
-    public String cabType;
+    public String tokenString;
 
-    public String numberPlate;
+    public boolean revoked;
 
-    public Long perKmRate;
+    public boolean expired;
 
 }
