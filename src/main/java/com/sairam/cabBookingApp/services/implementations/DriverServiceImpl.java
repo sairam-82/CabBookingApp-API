@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sairam.cabBookingApp.controllers.exchanges.responses.AuthenticationResponse;
 import com.sairam.cabBookingApp.controllers.exchanges.responses.DriverDetailsResponse;
 import com.sairam.cabBookingApp.exceptions.DriverNotFoundException;
+import com.sairam.cabBookingApp.exceptions.UserAlreadyExistsException;
 import com.sairam.cabBookingApp.models.Cab;
 import com.sairam.cabBookingApp.models.Customer;
 import com.sairam.cabBookingApp.models.Driver;
@@ -30,6 +31,10 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public AuthenticationResponse register(Driver driver){
+        if (driverRepository.findDriverByEmail(driver.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException(
+                    "Driver already exists with this email " + driver.getEmail());
+        }
         driver.setPassword(passwordEncoder.encode(driver.getPassword()));
 //        customerRepository.save(customer);
 //        Customer c=customerRepository.findCustomerByEmail(customer.getEmail());
@@ -62,6 +67,15 @@ public class DriverServiceImpl implements DriverService {
         );
         ModelMapper modelMapper=new ModelMapper();
         return modelMapper.map(driver,DriverDetailsResponse.class);
+    }
+
+    @Override
+    public String deleteDriver(Long id) {
+        Driver driver=driverRepository.findDriverById(id).orElseThrow(
+                ()-> new DriverNotFoundException("Driver Not Found with this id: "+id)
+        );
+        driverRepository.deleteById(id);
+        return "Deleted Successfully";
     }
 
 }

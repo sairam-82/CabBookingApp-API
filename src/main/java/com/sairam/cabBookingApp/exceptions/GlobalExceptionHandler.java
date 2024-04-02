@@ -23,4 +23,35 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<ErrorDetails>(err, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(CabNotFoundException.class)
+    public ResponseEntity<ErrorDetails> cabNotFoundHandler(CabNotFoundException e, WebRequest re){
+        ErrorDetails err = new ErrorDetails(LocalDateTime.now(), e.getMessage(), re.getDescription(false));
+
+        return new ResponseEntity<ErrorDetails>(err, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(TripNotFoundException.class)
+    public ResponseEntity<ErrorDetails> tripNotFoundHandler(TripNotFoundException e, WebRequest re){
+        ErrorDetails err = new ErrorDetails(LocalDateTime.now(), e.getMessage(), re.getDescription(false));
+
+        return new ResponseEntity<ErrorDetails>(err, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorDetails> userNotFoundHandler(UserNotFoundException e, WebRequest re){
+        ErrorDetails err = new ErrorDetails(LocalDateTime.now(), e.getMessage(), re.getDescription(false));
+
+        return new ResponseEntity<ErrorDetails>(err, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorDetails> userExistsHandler(UserAlreadyExistsException e, WebRequest re){
+        ErrorDetails err = new ErrorDetails(LocalDateTime.now(), e.getMessage(), re.getDescription(false));
+
+        return new ResponseEntity<ErrorDetails>(err, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(TripStatusException.class)
+    public ResponseEntity<ErrorDetails> tripStatusHandler(TripNotFoundException e, WebRequest re){
+        ErrorDetails err = new ErrorDetails(LocalDateTime.now(), e.getMessage(), re.getDescription(false));
+
+        return new ResponseEntity<ErrorDetails>(err, HttpStatus.BAD_REQUEST);
+    }
 }

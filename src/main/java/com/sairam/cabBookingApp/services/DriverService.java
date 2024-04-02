@@ -9,4 +9,5 @@ public interface DriverService {
     AuthenticationResponse register(Driver driver);
     String addCab(Cab cab);
     DriverDetailsResponse getDriverDetails(Long id);
+    String deleteDriver(Long id);
 }

@@ -39,9 +39,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable).
         authorizeHttpRequests(authorize-> authorize.requestMatchers("/check").hasAuthority("customer"));
-        http.authorizeHttpRequests(authorize-> authorize.requestMatchers("/auth/customer/register").permitAll());
+        http.authorizeHttpRequests(authorize-> authorize.requestMatchers("/auth/**").permitAll());
         http.authorizeHttpRequests(authorize-> authorize.requestMatchers("/auth/driver/register").permitAll().
                 requestMatchers("/driver/**").hasAuthority("driver").
+                requestMatchers("/auth/refresh-token").permitAll().
                 requestMatchers("/trip/**").authenticated()
                 .requestMatchers("/drivers/**").authenticated());
 

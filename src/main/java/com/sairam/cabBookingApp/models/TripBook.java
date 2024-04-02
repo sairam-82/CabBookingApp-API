@@ -24,8 +24,8 @@ public class TripBook {
 //    @Column(name="customer_user_id")
     private Customer customer;
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String tripId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long tripId;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "driver_user_id")

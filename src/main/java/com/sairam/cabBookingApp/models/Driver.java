@@ -19,12 +19,14 @@ public class Driver extends User{
         super( firstName, lastName, email, password, role,address, mobileNumber,null);
         this.license = license;
 
+
     }
 
 
 
 
 
+    private int numberOfRatings;
 
     private String license;
     @OneToMany(mappedBy = "driver",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
